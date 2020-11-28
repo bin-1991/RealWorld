@@ -7,23 +7,22 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Widgets Core REQUIRED)
-#qt5_wrap_ui(ui_FILES mainwindow.ui)
-#qt5_wrap_cpp()
 
-source_group(ui REGULAR_EXPRESSION "\\.*\\.ui")
-source_group(moc REGULAR_EXPRESSION "(mocs_.*)|(moc_.*)")
+#source_group(ui REGULAR_EXPRESSION "\\.*\\.ui")
+#source_group(moc REGULAR_EXPRESSION "(mocs_.*)|(moc_.*)")
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+
+set(SRC RealWorld.h
+        RealWorld.cpp
+        mainwindow.h
+        mainwindow.cpp
+        )
 set(ui_FILES mainwindow.ui)
-#set(header_FILES mainwindow.h)
-#qt5_wrap_ui(ui_FILES mainwindow.ui)
-#qt5_wrap_cpp(moc_FILES ${header_FILES})
-#qt5_add_resources(res_FILES realworld.qrc)
+set(res_FILES realworld.qrc)
 
-set(SRC  RealWorld.cpp)
-
-add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} )
+add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES})
 qt5_use_modules(RealWorld Core Widgets Gui)
 
 add_custom_command(TARGET RealWorld POST_BUILD
