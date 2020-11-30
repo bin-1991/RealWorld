@@ -24,19 +24,16 @@ set(SRC RealWorld.h
 set(ui_FILES mainwindow.ui)
 set(res_FILES realworld.qrc)
 
-set(hexeditor_SRC 
-    hexeditor/hexeditor_global.h
-    hexeditor/hexeditorconstants.h
-    #hexeditor/hexeditorplugin.cpp
-    #hexeditor/hexeditorplugin.h
-    hexeditor/hexeditorservice.h
-    hexeditor/hexeditorwidget.cpp
-    hexeditor/hexeditorwidget.h
-    hexeditor/markup.cpp
-    hexeditor/markup.h
+set(hexedit_SRC 
+    hexedit/hexeditor_global.h
+    hexedit/hexeditorservice.h
+    hexedit/hexedit.cpp
+    hexedit/hexedit.h
+    hexedit/markup.cpp
+    hexedit/markup.h
     )
 
-add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES} ${hexeditor_SRC})
+add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES} ${hexedit_SRC})
 qt5_use_modules(RealWorld Core Widgets Gui)
 
 add_custom_command(TARGET RealWorld POST_BUILD
