@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "bineditor_global.h"
+#include "hexeditor_global.h"
 
 #include <QColor>
 #include <QObject>
@@ -35,7 +35,7 @@
 
 namespace Core { class IEditor; }
 
-namespace BinEditor {
+namespace HexEditor {
 
 class EditorService
 {
@@ -78,8 +78,8 @@ public:
 
 } // namespace BinEditor
 
-#define BinEditor_FactoryService_iid "org.qt-project.Qt.Creator.BinEditor.EditorService"
+#define BinEditor_FactoryService_iid "org.qt-project.Qt.Creator.HexEditor.EditorService"
 
 QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(BinEditor::FactoryService, BinEditor_FactoryService_iid)
+Q_DECLARE_INTERFACE(HexEditor::FactoryService, BinEditor_FactoryService_iid)
 QT_END_NAMESPACE

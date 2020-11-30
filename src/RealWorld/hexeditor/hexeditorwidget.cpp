@@ -23,22 +23,23 @@
 **
 ****************************************************************************/
 
-#include "bineditorwidget.h"
-#include "bineditorservice.h"
+#include "hexeditorwidget.h"
+#include "hexeditorservice.h"
 #include "markup.h"
 
-#include <coreplugin/coreconstants.h>
-#include <coreplugin/editormanager/editormanager.h>
-#include <coreplugin/editormanager/ieditor.h>
 
-#include <texteditor/behaviorsettings.h>
-#include <texteditor/fontsettings.h>
-#include <texteditor/texteditorconstants.h>
-#include <texteditor/texteditorsettings.h>
-
-#include <utils/fadingindicator.h>
-#include <utils/fileutils.h>
-#include <utils/qtcassert.h>
+//#include <coreplugin/coreconstants.h>
+//#include <coreplugin/editormanager/editormanager.h>
+//#include <coreplugin/editormanager/ieditor.h>
+//
+//#include <texteditor/behaviorsettings.h>
+//#include <texteditor/fontsettings.h>
+//#include <texteditor/texteditorconstants.h>
+//#include <texteditor/texteditorsettings.h>
+//
+//#include <utils/fadingindicator.h>
+//#include <utils/fileutils.h>
+//#include <utils/qtcassert.h>
 
 #include <QByteArrayMatcher>
 #include <QDebug>
@@ -61,8 +62,7 @@
 
 using namespace Core;
 
-namespace BinEditor {
-namespace Internal {
+namespace HexEditor {
 
 const QChar MidpointChar = QLatin1Char(0xB7);
 
@@ -83,11 +83,11 @@ static QByteArray calculateHexPattern(const QByteArray &pattern)
     return result;
 }
 
-class BinEditorWidgetPrivate : public EditorService
+class HexEditorWidgetPrivate : public EditorService
 {
 public:
-    BinEditorWidgetPrivate(BinEditorWidget *widget) : q(widget) {}
-    ~BinEditorWidgetPrivate() override { if (m_aboutToBeDestroyedHandler) m_aboutToBeDestroyedHandler(); }
+    HexEditorWidgetPrivate(HexEditorWidget *widget) : q(widget) {}
+    ~HexEditorWidgetPrivate() override { if (m_aboutToBeDestroyedHandler) m_aboutToBeDestroyedHandler(); }
 
     QWidget *widget() override { return q; }
     IEditor *editor() override { return q->editor(); }
@@ -128,7 +128,7 @@ public:
     void announceChangedData(quint64 address, const QByteArray &ba) { if (m_dataChangedHandler) m_dataChangedHandler(address, ba); }
 
 private:
-    BinEditorWidget *q;
+    HexEditorWidget *q;
     std::function<void(quint64)> m_fetchDataHandler;
     std::function<void(quint64)> m_newWindowRequestHandler;
     std::function<void(quint64)> m_newRangeRequestHandler;
@@ -138,8 +138,8 @@ private:
     QList<Markup> m_markup;
 };
 
-BinEditorWidget::BinEditorWidget(QWidget *parent)
-    : QAbstractScrollArea(parent), d(new BinEditorWidgetPrivate(this))
+HexEditorWidget::HexEditorWidget(QWidget *parent)
+    : QAbstractScrollArea(parent), d(new HexEditorWidgetPrivate(this))
 {
     m_bytesPerLine = 16;
     m_ieditor = nullptr;
@@ -161,24 +161,24 @@ BinEditorWidget::BinEditorWidget(QWidget *parent)
     setFrameStyle(QFrame::Plain);
 
     // Font settings
-    setFontSettings(TextEditor::TextEditorSettings::fontSettings());
-    connect(TextEditor::TextEditorSettings::instance(),
-            &TextEditor::TextEditorSettings::fontSettingsChanged,
-            this, &BinEditorWidget::setFontSettings);
+    //setFontSettings(TextEditor::TextEditorSettings::fontSettings());
+    //connect(TextEditor::TextEditorSettings::instance(),
+    //        &TextEditor::TextEditorSettings::fontSettingsChanged,
+    //        this, &HexEditorWidget::setFontSettings);
 
 }
 
-BinEditorWidget::~BinEditorWidget()
+HexEditorWidget::~HexEditorWidget()
 {
     delete d;
 }
 
-EditorService *BinEditorWidget::editorService() const
+EditorService *HexEditorWidget::editorService() const
 {
     return d;
 }
 
-void BinEditorWidget::init()
+void HexEditorWidget::init()
 {
     const int addressStringWidth =
         2*m_addressBytes + (m_addressBytes - 1) / 2;
@@ -227,7 +227,7 @@ void BinEditorWidget::init()
 }
 
 
-void BinEditorWidget::addData(quint64 addr, const QByteArray &data)
+void HexEditorWidget::addData(quint64 addr, const QByteArray &data)
 {
     QTC_ASSERT(data.size() == m_blockSize, return);
     if (addr >= m_baseAddr && addr <= m_baseAddr + m_size - 1) {
@@ -240,7 +240,7 @@ void BinEditorWidget::addData(quint64 addr, const QByteArray &data)
     }
 }
 
-bool BinEditorWidget::requestDataAt(qint64 pos) const
+bool HexEditorWidget::requestDataAt(qint64 pos) const
 {
     qint64 block = pos / m_blockSize;
     BlockMap::const_iterator it = m_modifiedData.find(block);
@@ -256,21 +256,21 @@ bool BinEditorWidget::requestDataAt(qint64 pos) const
     return true;
 }
 
-bool BinEditorWidget::requestOldDataAt(qint64 pos) const
+bool HexEditorWidget::requestOldDataAt(qint64 pos) const
 {
     qint64 block = pos / m_blockSize;
     BlockMap::const_iterator it = m_oldData.find(block);
     return it != m_oldData.end();
 }
 
-char BinEditorWidget::dataAt(qint64 pos, bool old) const
+char HexEditorWidget::dataAt(qint64 pos, bool old) const
 {
     qint64 block = pos / m_blockSize;
     int offset = static_cast<int>(pos - block * m_blockSize);
     return blockData(block, old).at(offset);
 }
 
-void BinEditorWidget::changeDataAt(qint64 pos, char c)
+void HexEditorWidget::changeDataAt(qint64 pos, char c)
 {
     qint64 block = pos / m_blockSize;
     BlockMap::iterator it = m_modifiedData.find(block);
@@ -289,7 +289,7 @@ void BinEditorWidget::changeDataAt(qint64 pos, char c)
     d->announceChangedData(m_baseAddr + pos, QByteArray(1, c));
 }
 
-QByteArray BinEditorWidget::dataMid(qint64 from, int length, bool old) const
+QByteArray HexEditorWidget::dataMid(qint64 from, int length, bool old) const
 {
     qint64 end = from + length;
     qint64 block = from / m_blockSize;
@@ -303,7 +303,7 @@ QByteArray BinEditorWidget::dataMid(qint64 from, int length, bool old) const
     return data.mid(from - ((from / m_blockSize) * m_blockSize), length);
 }
 
-QByteArray BinEditorWidget::blockData(qint64 block, bool old) const
+QByteArray HexEditorWidget::blockData(qint64 block, bool old) const
 {
     if (old) {
         BlockMap::const_iterator it = m_modifiedData.find(block);
@@ -315,12 +315,12 @@ QByteArray BinEditorWidget::blockData(qint64 block, bool old) const
             ? it.value() : m_data.value(block, m_emptyBlock);
 }
 
-void BinEditorWidget::setFontSettings(const TextEditor::FontSettings &fs)
-{
-    setFont(fs.toTextCharFormat(TextEditor::C_TEXT).font());
-}
+//void HexEditorWidget::setFontSettings(const TextEditor::FontSettings &fs)
+//{
+//    setFont(fs.toTextCharFormat(TextEditor::C_TEXT).font());
+//}
 
-void BinEditorWidget::setBlinkingCursorEnabled(bool enable)
+void HexEditorWidget::setBlinkingCursorEnabled(bool enable)
 {
     if (enable && QApplication::cursorFlashTime() > 0)
         m_cursorBlinkTimer.start(QApplication::cursorFlashTime() / 2, this);
@@ -330,17 +330,17 @@ void BinEditorWidget::setBlinkingCursorEnabled(bool enable)
     updateLines();
 }
 
-void BinEditorWidget::focusInEvent(QFocusEvent *)
+void HexEditorWidget::focusInEvent(QFocusEvent *)
 {
     setBlinkingCursorEnabled(true);
 }
 
-void BinEditorWidget::focusOutEvent(QFocusEvent *)
+void HexEditorWidget::focusOutEvent(QFocusEvent *)
 {
     setBlinkingCursorEnabled(false);
 }
 
-void BinEditorWidget::timerEvent(QTimerEvent *e)
+void HexEditorWidget::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == m_autoScrollTimer.timerId()) {
         QRect visible = viewport()->rect();
@@ -378,7 +378,7 @@ void BinEditorWidget::timerEvent(QTimerEvent *e)
 }
 
 
-void BinEditorWidget::setModified(bool modified)
+void HexEditorWidget::setModified(bool modified)
 {
     int unmodifiedState = modified ? -1 : m_undoStack.size();
     if (unmodifiedState == m_unmodifiedState)
@@ -387,22 +387,22 @@ void BinEditorWidget::setModified(bool modified)
     emit modificationChanged(m_undoStack.size() != m_unmodifiedState);
 }
 
-bool BinEditorWidget::isModified() const
+bool HexEditorWidget::isModified() const
 {
     return (m_undoStack.size() != m_unmodifiedState);
 }
 
-void BinEditorWidget::setReadOnly(bool readOnly)
+void HexEditorWidget::setReadOnly(bool readOnly)
 {
     m_readOnly = readOnly;
 }
 
-bool BinEditorWidget::isReadOnly() const
+bool HexEditorWidget::isReadOnly() const
 {
     return m_readOnly;
 }
 
-bool BinEditorWidget::save(QString *errorString, const QString &oldFileName, const QString &newFileName)
+bool HexEditorWidget::save(QString *errorString, const QString &oldFileName, const QString &newFileName)
 {
     if (oldFileName != newFileName) {
         QString tmpName;
@@ -419,33 +419,33 @@ bool BinEditorWidget::save(QString *errorString, const QString &oldFileName, con
         if (!QFile::rename(tmpName, newFileName))
             return false;
     }
-    Utils::FileSaver saver(newFileName, QIODevice::ReadWrite); // QtBug: WriteOnly truncates.
-    if (!saver.hasError()) {
-        QFile *output = saver.file();
-        const qint64 size = output->size();
-        for (BlockMap::const_iterator it = m_modifiedData.constBegin();
-            it != m_modifiedData.constEnd(); ++it) {
-            if (!saver.setResult(output->seek(it.key() * m_blockSize)))
-                break;
-            if (!saver.write(it.value()))
-                break;
-            if (!saver.setResult(output->flush()))
-                break;
-        }
-
-        // We may have padded the displayed data, so we have to make sure
-        // changes to that area are not actually written back to disk.
-        if (!saver.hasError())
-            saver.setResult(output->resize(size));
-    }
-    if (!saver.finalize(errorString))
-        return false;
+    //Utils::FileSaver saver(newFileName, QIODevice::ReadWrite); // QtBug: WriteOnly truncates.
+    //if (!saver.hasError()) {
+    //    QFile *output = saver.file();
+    //    const qint64 size = output->size();
+    //    for (BlockMap::const_iterator it = m_modifiedData.constBegin();
+    //        it != m_modifiedData.constEnd(); ++it) {
+    //        if (!saver.setResult(output->seek(it.key() * m_blockSize)))
+    //            break;
+    //        if (!saver.write(it.value()))
+    //            break;
+    //        if (!saver.setResult(output->flush()))
+    //            break;
+    //    }
+    //
+    //    // We may have padded the displayed data, so we have to make sure
+    //    // changes to that area are not actually written back to disk.
+    //    if (!saver.hasError())
+    //        saver.setResult(output->resize(size));
+    //}
+    //if (!saver.finalize(errorString))
+    //    return false;
 
     setModified(false);
     return true;
 }
 
-void BinEditorWidget::setSizes(quint64 startAddr, qint64 range, int blockSize)
+void HexEditorWidget::setSizes(quint64 startAddr, qint64 range, int blockSize)
 {
     int newBlockSize = blockSize;
     QTC_ASSERT(blockSize, return);
@@ -489,12 +489,12 @@ void BinEditorWidget::setSizes(quint64 startAddr, qint64 range, int blockSize)
     viewport()->update();
 }
 
-void BinEditorWidget::resizeEvent(QResizeEvent *)
+void HexEditorWidget::resizeEvent(QResizeEvent *)
 {
     init();
 }
 
-void BinEditorWidget::scrollContentsBy(int dx, int dy)
+void HexEditorWidget::scrollContentsBy(int dx, int dy)
 {
     viewport()->scroll(isRightToLeft() ? -dx : dx, dy * m_lineHeight);
     const QScrollBar * const scrollBar = verticalScrollBar();
@@ -505,7 +505,7 @@ void BinEditorWidget::scrollContentsBy(int dx, int dy)
         d->requestNewRange(baseAddress());
 }
 
-void BinEditorWidget::changeEvent(QEvent *e)
+void HexEditorWidget::changeEvent(QEvent *e)
 {
     QAbstractScrollArea::changeEvent(e);
     if (e->type() == QEvent::ActivationChange) {
@@ -517,15 +517,15 @@ void BinEditorWidget::changeEvent(QEvent *e)
 }
 
 
-void BinEditorWidget::wheelEvent(QWheelEvent *e)
+void HexEditorWidget::wheelEvent(QWheelEvent *e)
 {
     if (e->modifiers() & Qt::ControlModifier) {
-        if (!TextEditor::TextEditorSettings::behaviorSettings().m_scrollWheelZooming) {
-            // When the setting is disabled globally,
-            // we have to skip calling QAbstractScrollArea::wheelEvent()
-            // that changes zoom in it.
-            return;
-        }
+        //if (!TextEditor::TextEditorSettings::behaviorSettings().m_scrollWheelZooming) {
+        //    // When the setting is disabled globally,
+        //    // we have to skip calling QAbstractScrollArea::wheelEvent()
+        //    // that changes zoom in it.
+        //    return;
+        //}
 
         const float delta = e->angleDelta().y() / 120.f;
         if (delta != 0)
@@ -535,7 +535,7 @@ void BinEditorWidget::wheelEvent(QWheelEvent *e)
     QAbstractScrollArea::wheelEvent(e);
 }
 
-QRect BinEditorWidget::cursorRect() const
+QRect HexEditorWidget::cursorRect() const
 {
     int topLine = verticalScrollBar()->value();
     int line = m_cursorPosition / m_bytesPerLine;
@@ -549,54 +549,54 @@ QRect BinEditorWidget::cursorRect() const
     int w = m_hexCursor ? m_columnWidth : m_charWidth;
     return QRect(x, y, w, m_lineHeight);
 }
+//
+//Utils::optional<qint64> HexEditorWidget::posAt(const QPoint &pos, bool includeEmptyArea) const
+//{
+//    const int xoffset = horizontalScrollBar()->value();
+//    int x = xoffset + pos.x() - m_margin - m_labelWidth;
+//    if (!includeEmptyArea && x < 0)
+//        return Utils::nullopt;
+//    int column = qMin(15, qMax(0,x) / m_columnWidth);
+//    const qint64 topLine = verticalScrollBar()->value();
+//    const qint64 line = topLine + pos.y() / m_lineHeight;
+//
+//    // "clear text" area
+//    if (x > m_bytesPerLine * m_columnWidth + m_charWidth/2) {
+//        x -= m_bytesPerLine * m_columnWidth + m_charWidth;
+//        for (column = 0; column < 16; ++column) {
+//            const qint64 dataPos = line * m_bytesPerLine + column;
+//            if (dataPos < 0 || dataPos >= m_size)
+//                break;
+//            QChar qc(QLatin1Char(dataAt(dataPos)));
+//            if (!qc.isPrint())
+//                qc = MidpointChar;
+//            x -= fontMetrics().horizontalAdvance(qc);
+//            if (x <= 0)
+//                break;
+//        }
+//        if (!includeEmptyArea && x > 0) // right of the text area
+//            return Utils::nullopt;
+//    }
+//
+//    const qint64 bytePos = line * m_bytesPerLine + column;
+//    if (!includeEmptyArea && bytePos >= m_size)
+//        return Utils::nullopt;
+//    return qMin(m_size - 1, bytePos);
+//}
 
-Utils::optional<qint64> BinEditorWidget::posAt(const QPoint &pos, bool includeEmptyArea) const
-{
-    const int xoffset = horizontalScrollBar()->value();
-    int x = xoffset + pos.x() - m_margin - m_labelWidth;
-    if (!includeEmptyArea && x < 0)
-        return Utils::nullopt;
-    int column = qMin(15, qMax(0,x) / m_columnWidth);
-    const qint64 topLine = verticalScrollBar()->value();
-    const qint64 line = topLine + pos.y() / m_lineHeight;
-
-    // "clear text" area
-    if (x > m_bytesPerLine * m_columnWidth + m_charWidth/2) {
-        x -= m_bytesPerLine * m_columnWidth + m_charWidth;
-        for (column = 0; column < 16; ++column) {
-            const qint64 dataPos = line * m_bytesPerLine + column;
-            if (dataPos < 0 || dataPos >= m_size)
-                break;
-            QChar qc(QLatin1Char(dataAt(dataPos)));
-            if (!qc.isPrint())
-                qc = MidpointChar;
-            x -= fontMetrics().horizontalAdvance(qc);
-            if (x <= 0)
-                break;
-        }
-        if (!includeEmptyArea && x > 0) // right of the text area
-            return Utils::nullopt;
-    }
-
-    const qint64 bytePos = line * m_bytesPerLine + column;
-    if (!includeEmptyArea && bytePos >= m_size)
-        return Utils::nullopt;
-    return qMin(m_size - 1, bytePos);
-}
-
-bool BinEditorWidget::inTextArea(const QPoint &pos) const
+bool HexEditorWidget::inTextArea(const QPoint &pos) const
 {
     int xoffset = horizontalScrollBar()->value();
     int x = xoffset + pos.x() - m_margin - m_labelWidth;
     return (x > m_bytesPerLine * m_columnWidth + m_charWidth/2);
 }
 
-void BinEditorWidget::updateLines()
+void HexEditorWidget::updateLines()
 {
     updateLines(m_cursorPosition, m_cursorPosition);
 }
 
-void BinEditorWidget::updateLines(int fromPosition, int toPosition)
+void HexEditorWidget::updateLines(int fromPosition, int toPosition)
 {
     int topLine = verticalScrollBar()->value();
     int firstLine = qMin(fromPosition, toPosition) / m_bytesPerLine;
@@ -607,7 +607,7 @@ void BinEditorWidget::updateLines(int fromPosition, int toPosition)
     viewport()->update(0, y, viewport()->width(), h);
 }
 
-int BinEditorWidget::dataIndexOf(const QByteArray &pattern, qint64 from, bool caseSensitive) const
+int HexEditorWidget::dataIndexOf(const QByteArray &pattern, qint64 from, bool caseSensitive) const
 {
     int trailing = pattern.size();
     if (trailing > m_blockSize)
@@ -639,7 +639,7 @@ int BinEditorWidget::dataIndexOf(const QByteArray &pattern, qint64 from, bool ca
     return end == m_size ? -1 : -2;
 }
 
-int BinEditorWidget::dataLastIndexOf(const QByteArray &pattern, qint64 from, bool caseSensitive) const
+int HexEditorWidget::dataLastIndexOf(const QByteArray &pattern, qint64 from, bool caseSensitive) const
 {
     int trailing = pattern.size();
     if (trailing > m_blockSize)
@@ -673,7 +673,7 @@ int BinEditorWidget::dataLastIndexOf(const QByteArray &pattern, qint64 from, boo
 }
 
 
-int BinEditorWidget::find(const QByteArray &pattern_arg, qint64 from,
+int HexEditorWidget::find(const QByteArray &pattern_arg, qint64 from,
                     QTextDocument::FindFlags findFlags)
 {
     if (pattern_arg.isEmpty())
@@ -710,7 +710,7 @@ int BinEditorWidget::find(const QByteArray &pattern_arg, qint64 from,
     return pos;
 }
 
-int BinEditorWidget::findPattern(const QByteArray &data, const QByteArray &dataHex,
+int HexEditorWidget::findPattern(const QByteArray &data, const QByteArray &dataHex,
     int from, int offset, int *match)
 {
     if (m_searchPattern.isEmpty())
@@ -735,7 +735,7 @@ int BinEditorWidget::findPattern(const QByteArray &data, const QByteArray &dataH
 }
 
 
-void BinEditorWidget::drawItems(QPainter *painter, int x, int y, const QString &itemString)
+void HexEditorWidget::drawItems(QPainter *painter, int x, int y, const QString &itemString)
 {
     if (m_isMonospacedFont) {
         painter->drawText(x, y, itemString);
@@ -745,7 +745,7 @@ void BinEditorWidget::drawItems(QPainter *painter, int x, int y, const QString &
     }
 }
 
-void BinEditorWidget::drawChanges(QPainter *painter, int x, int y, const char *changes)
+void HexEditorWidget::drawChanges(QPainter *painter, int x, int y, const char *changes)
 {
     const QBrush red(QColor(250, 150, 150));
     for (int i = 0; i < m_bytesPerLine; ++i) {
@@ -756,7 +756,7 @@ void BinEditorWidget::drawChanges(QPainter *painter, int x, int y, const char *c
     }
 }
 
-QString BinEditorWidget::addressString(quint64 address)
+QString HexEditorWidget::addressString(quint64 address)
 {
     QChar *addressStringData = m_addressString.data();
     const char *hex = "0123456789abcdef";
@@ -785,7 +785,7 @@ static void paintCursorBorder(QPainter *painter, const QRect &cursorRect)
     painter->restore();
 }
 
-void BinEditorWidget::paintEvent(QPaintEvent *e)
+void HexEditorWidget::paintEvent(QPaintEvent *e)
 {
     QPainter painter(viewport());
     const int topLine = verticalScrollBar()->value();
@@ -1011,12 +1011,12 @@ void BinEditorWidget::paintEvent(QPaintEvent *e)
 }
 
 
-qint64 BinEditorWidget::cursorPosition() const
+qint64 HexEditorWidget::cursorPosition() const
 {
     return m_cursorPosition;
 }
 
-void BinEditorWidget::setCursorPosition(qint64 pos, MoveMode moveMode)
+void HexEditorWidget::setCursorPosition(qint64 pos, MoveMode moveMode)
 {
     pos = qMin(m_size - 1, qMax(qint64(0), pos));
     int oldCursorPosition = m_cursorPosition;
@@ -1034,7 +1034,7 @@ void BinEditorWidget::setCursorPosition(qint64 pos, MoveMode moveMode)
 }
 
 
-void BinEditorWidget::ensureCursorVisible()
+void HexEditorWidget::ensureCursorVisible()
 {
     QRect cr = cursorRect();
     QRect vr = viewport()->rect();
@@ -1046,12 +1046,12 @@ void BinEditorWidget::ensureCursorVisible()
     }
 }
 
-void BinEditorWidget::mousePressEvent(QMouseEvent *e)
+void HexEditorWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() != Qt::LeftButton)
         return;
     MoveMode moveMode = e->modifiers() & Qt::ShiftModifier ? KeepAnchor : MoveAnchor;
-    setCursorPosition(posAt(e->pos()).value(), moveMode);
+    //setCursorPosition(posAt(e->pos()).value(), moveMode);
     setBlinkingCursorEnabled(true);
     if (m_hexCursor == inTextArea(e->pos())) {
         m_hexCursor = !m_hexCursor;
@@ -1059,11 +1059,11 @@ void BinEditorWidget::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void BinEditorWidget::mouseMoveEvent(QMouseEvent *e)
+void HexEditorWidget::mouseMoveEvent(QMouseEvent *e)
 {
     if (!(e->buttons() & Qt::LeftButton))
         return;
-    setCursorPosition(posAt(e->pos()).value(), KeepAnchor);
+    //setCursorPosition(posAt(e->pos()).value(), KeepAnchor);
     if (m_hexCursor == inTextArea(e->pos())) {
         m_hexCursor = !m_hexCursor;
         updateLines();
@@ -1075,7 +1075,7 @@ void BinEditorWidget::mouseMoveEvent(QMouseEvent *e)
         m_autoScrollTimer.start(100, this);
 }
 
-void BinEditorWidget::mouseReleaseEvent(QMouseEvent *)
+void HexEditorWidget::mouseReleaseEvent(QMouseEvent *)
 {
     if (m_autoScrollTimer.isActive()) {
         m_autoScrollTimer.stop();
@@ -1083,13 +1083,13 @@ void BinEditorWidget::mouseReleaseEvent(QMouseEvent *)
     }
 }
 
-void BinEditorWidget::selectAll()
+void HexEditorWidget::selectAll()
 {
     setCursorPosition(0);
     setCursorPosition(m_size-1, KeepAnchor);
 }
 
-void BinEditorWidget::clear()
+void HexEditorWidget::clear()
 {
     m_baseAddr = 0;
     m_data.clear();
@@ -1111,7 +1111,7 @@ void BinEditorWidget::clear()
     viewport()->update();
 }
 
-bool BinEditorWidget::event(QEvent *e)
+bool HexEditorWidget::event(QEvent *e)
 {
     switch (e->type()) {
     case QEvent::KeyPress:
@@ -1152,7 +1152,7 @@ bool BinEditorWidget::event(QEvent *e)
     return QAbstractScrollArea::event(e);
 }
 
-QString BinEditorWidget::toolTip(const QHelpEvent *helpEvent) const
+QString HexEditorWidget::toolTip(const QHelpEvent *helpEvent) const
 {
     qint64 selStart = selectionStart();
     qint64 selEnd = selectionEnd();
@@ -1177,10 +1177,10 @@ QString BinEditorWidget::toolTip(const QHelpEvent *helpEvent) const
     } while (startInLine <= selEnd);
     if (!insideSelection) {
         // show popup for byte under cursor
-        Utils::optional<qint64> pos = posAt(helpEvent->pos(), /*includeEmptyArea*/false);
-        if (!pos)
-            return QString();
-        selStart = pos.value();
+        //Utils::optional<qint64> pos = posAt(helpEvent->pos(), /*includeEmptyArea*/false);
+        //if (!pos)
+        //    return QString();
+        //selStart = pos.value();
         byteCount = 1;
     }
 
@@ -1345,7 +1345,7 @@ QString BinEditorWidget::toolTip(const QHelpEvent *helpEvent) const
     return msg;
 }
 
-void BinEditorWidget::keyPressEvent(QKeyEvent *e)
+void HexEditorWidget::keyPressEvent(QKeyEvent *e)
 {
 
     if (e == QKeySequence::SelectAll) {
@@ -1452,15 +1452,15 @@ void BinEditorWidget::keyPressEvent(QKeyEvent *e)
     e->accept();
 }
 
-static void showZoomIndicator(QWidget *editor, const int newZoom)
-{
-    Utils::FadingIndicator::showText(editor,
-                                     QCoreApplication::translate("BinEditorWidget::TextEditorWidget",
-                                                                 "Zoom: %1%").arg(newZoom),
-                                     Utils::FadingIndicator::SmallText);
-}
+//static void showZoomIndicator(QWidget *editor, const int newZoom)
+//{
+//    Utils::FadingIndicator::showText(editor,
+//                                     QCoreApplication::translate("HexEditorWidget::TextEditorWidget",
+//                                                                 "Zoom: %1%").arg(newZoom),
+//                                     Utils::FadingIndicator::SmallText);
+//}
 
-void BinEditorWidget::zoomF(float delta)
+void HexEditorWidget::zoomF(float delta)
 {
     float step = 10.f * delta;
     // Ensure we always zoom a minimal step in-case the resolution is more than 16x
@@ -1469,11 +1469,11 @@ void BinEditorWidget::zoomF(float delta)
     else if (step < 0 && step > -1)
         step = -1;
 
-    const int newZoom = TextEditor::TextEditorSettings::increaseFontZoom(int(step));
-    showZoomIndicator(this, newZoom);
+    //const int newZoom = TextEditor::TextEditorSettings::increaseFontZoom(int(step));
+    //showZoomIndicator(this, newZoom);
 }
 
-void BinEditorWidget::copy(bool raw)
+void HexEditorWidget::copy(bool raw)
 {
     int selStart = selectionStart();
     int selEnd = selectionEnd();
@@ -1500,7 +1500,7 @@ void BinEditorWidget::copy(bool raw)
     QApplication::clipboard()->setText(hexString);
 }
 
-void BinEditorWidget::highlightSearchResults(const QByteArray &pattern, QTextDocument::FindFlags findFlags)
+void HexEditorWidget::highlightSearchResults(const QByteArray &pattern, QTextDocument::FindFlags findFlags)
 {
     if (m_searchPattern == pattern)
         return;
@@ -1512,7 +1512,7 @@ void BinEditorWidget::highlightSearchResults(const QByteArray &pattern, QTextDoc
     viewport()->update();
 }
 
-void BinEditorWidget::changeData(int position, uchar character, bool highNibble)
+void HexEditorWidget::changeData(int position, uchar character, bool highNibble)
 {
     if (!requestDataAt(position))
         return;
@@ -1544,7 +1544,7 @@ void BinEditorWidget::changeData(int position, uchar character, bool highNibble)
 }
 
 
-void BinEditorWidget::undo()
+void HexEditorWidget::undo()
 {
     if (m_undoStack.isEmpty())
         return;
@@ -1564,7 +1564,7 @@ void BinEditorWidget::undo()
         emit redoAvailable(true);
 }
 
-void BinEditorWidget::redo()
+void HexEditorWidget::redo()
 {
     if (m_redoStack.isEmpty())
         return;
@@ -1583,7 +1583,7 @@ void BinEditorWidget::redo()
         emit redoAvailable(false);
 }
 
-void BinEditorWidget::contextMenuEvent(QContextMenuEvent *event)
+void HexEditorWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     const int selStart = selectionStart();
     const int byteCount = selectionEnd() - selStart + 1;
@@ -1660,7 +1660,7 @@ void BinEditorWidget::contextMenuEvent(QContextMenuEvent *event)
     delete contextMenu;
 }
 
-void BinEditorWidget::setupJumpToMenuAction(QMenu *menu, QAction *actionHere,
+void HexEditorWidget::setupJumpToMenuAction(QMenu *menu, QAction *actionHere,
                                       QAction *actionNew, quint64 addr)
 {
     actionHere->setText(tr("Jump to Address 0x%1 in This Window")
@@ -1673,7 +1673,7 @@ void BinEditorWidget::setupJumpToMenuAction(QMenu *menu, QAction *actionHere,
         actionNew->setEnabled(false);
 }
 
-void BinEditorWidget::jumpToAddress(quint64 address)
+void HexEditorWidget::jumpToAddress(quint64 address)
 {
     if (address >= m_baseAddr && address < m_baseAddr + m_size)
         setCursorPosition(address - m_baseAddr);
@@ -1681,12 +1681,12 @@ void BinEditorWidget::jumpToAddress(quint64 address)
         d->requestNewRange(address);
 }
 
-void BinEditorWidget::setNewWindowRequestAllowed(bool c)
+void HexEditorWidget::setNewWindowRequestAllowed(bool c)
 {
     m_canRequestNewWindow = c;
 }
 
-void BinEditorWidget::updateContents()
+void HexEditorWidget::updateContents()
 {
     m_oldData = m_data;
     m_data.clear();
@@ -1696,14 +1696,14 @@ void BinEditorWidget::updateContents()
         d->fetchData(m_baseAddr + it.key());
 }
 
-QPoint BinEditorWidget::offsetToPos(qint64 offset) const
+QPoint HexEditorWidget::offsetToPos(qint64 offset) const
 {
     const int x = m_labelWidth + (offset % m_bytesPerLine) * m_columnWidth;
     const int y = (offset / m_bytesPerLine  - verticalScrollBar()->value()) * m_lineHeight;
     return QPoint(x, y);
 }
 
-void BinEditorWidget::asFloat(qint64 offset, float &value, bool old) const
+void HexEditorWidget::asFloat(qint64 offset, float &value, bool old) const
 {
     value = 0;
     const QByteArray data = dataMid(offset, sizeof(float), old);
@@ -1712,7 +1712,7 @@ void BinEditorWidget::asFloat(qint64 offset, float &value, bool old) const
     value = *f;
 }
 
-void BinEditorWidget::asDouble(qint64 offset, double &value, bool old) const
+void HexEditorWidget::asDouble(qint64 offset, double &value, bool old) const
 {
     value = 0;
     const QByteArray data = dataMid(offset, sizeof(double), old);
@@ -1721,7 +1721,7 @@ void BinEditorWidget::asDouble(qint64 offset, double &value, bool old) const
     value = *f;
 }
 
-void BinEditorWidget::asIntegers(qint64 offset, int count, quint64 &bigEndianValue,
+void HexEditorWidget::asIntegers(qint64 offset, int count, quint64 &bigEndianValue,
     quint64 &littleEndianValue, bool old) const
 {
     bigEndianValue = littleEndianValue = 0;
@@ -1733,11 +1733,10 @@ void BinEditorWidget::asIntegers(qint64 offset, int count, quint64 &bigEndianVal
     }
 }
 
-void BinEditorWidget::setMarkup(const QList<Markup> &markup)
+void HexEditorWidget::setMarkup(const QList<Markup> &markup)
 {
     m_markup = markup;
     viewport()->update();
 }
 
 } // namespace Internal
-} // namespace BinEditor

@@ -25,20 +25,20 @@
 
 #pragma once
 
-#include "bineditorservice.h"
+#include "hexeditorservice.h"
 
 #include <extensionsystem/iplugin.h>
 #include <coreplugin/editormanager/ieditorfactory.h>
 
-namespace BinEditor {
+namespace HexEditor {
 namespace Internal {
 
-class BinEditorPlugin : public ExtensionSystem::IPlugin
+class HexEditorPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "BinEditor.json")
 
-    ~BinEditorPlugin() override;
+    ~HexEditorPlugin() override;
 
     bool initialize(const QStringList &arguments, QString *errorMessage) final;
     void extensionsInitialized() final {}
@@ -53,7 +53,7 @@ public:
 class FactoryServiceImpl : public QObject, public FactoryService
 {
     Q_OBJECT
-    Q_INTERFACES(BinEditor::FactoryService)
+    Q_INTERFACES(HexEditor::FactoryService)
 
 public:
     EditorService *createEditorService(const QString &title0, bool wantsEditor) final;

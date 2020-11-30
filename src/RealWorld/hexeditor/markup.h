@@ -30,7 +30,7 @@
 #include <QList>
 #include <QMetaType>
 
-namespace BinEditor {
+namespace HexEditor {
 
 class Markup
 {
@@ -47,4 +47,4 @@ public:
 
 } // namespace BinEditor
 
-Q_DECLARE_METATYPE(BinEditor::Markup)
+Q_DECLARE_METATYPE(HexEditor::Markup)

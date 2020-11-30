@@ -25,11 +25,11 @@
 
 #pragma once
 
-namespace BinEditor {
+namespace HexEditor {
 namespace Constants {
 
-const char C_BINEDITOR[] = "BinEditor.BinaryEditor";
-const char C_BINEDITOR_DISPLAY_NAME[] = QT_TRANSLATE_NOOP("OpenWith::Editors", "Binary Editor");
+const char C_BINEDITOR[] = "HexEditor.HexEditor";
+const char C_BINEDITOR_DISPLAY_NAME[] = QT_TRANSLATE_NOOP("OpenWith::Editors", "Hex Editor");
 const char C_BINEDITOR_MIMETYPE[] = "application/octet-stream";
 
 } // namespace Constants

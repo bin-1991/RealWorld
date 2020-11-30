@@ -11,7 +11,9 @@ find_package(Qt5 COMPONENTS Widgets Core REQUIRED)
 #source_group(ui REGULAR_EXPRESSION "\\.*\\.ui")
 #source_group(moc REGULAR_EXPRESSION "(mocs_.*)|(moc_.*)")
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/hexeditor
+                    )
 
 
 set(SRC RealWorld.h
@@ -22,7 +24,19 @@ set(SRC RealWorld.h
 set(ui_FILES mainwindow.ui)
 set(res_FILES realworld.qrc)
 
-add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES})
+set(hexeditor_SRC 
+    hexeditor/hexeditor_global.h
+    hexeditor/hexeditorconstants.h
+    #hexeditor/hexeditorplugin.cpp
+    #hexeditor/hexeditorplugin.h
+    hexeditor/hexeditorservice.h
+    hexeditor/hexeditorwidget.cpp
+    hexeditor/hexeditorwidget.h
+    hexeditor/markup.cpp
+    hexeditor/markup.h
+    )
+
+add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES} ${hexeditor_SRC})
 qt5_use_modules(RealWorld Core Widgets Gui)
 
 add_custom_command(TARGET RealWorld POST_BUILD

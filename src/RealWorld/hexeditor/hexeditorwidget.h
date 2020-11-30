@@ -25,11 +25,11 @@
 
 #pragma once
 
-#include "bineditor_global.h"
+#include "hexeditor_global.h"
 #include "markup.h"
-#include "bineditorservice.h"
+#include "hexeditorservice.h"
 
-#include <utils/optional.h>
+//#include <utils/optional.h>
 
 #include <QBasicTimer>
 #include <QMap>
@@ -40,30 +40,26 @@
 #include <QAbstractScrollArea>
 #include <QTextDocument>
 #include <QTextFormat>
+#include <QDockWidget>
 
 QT_FORWARD_DECLARE_CLASS(QMenu)
 QT_FORWARD_DECLARE_CLASS(QHelpEvent)
 
-namespace Core { class IEditor; }
+namespace HexEditor {
 
-namespace TextEditor { class FontSettings; }
+class HexEditorWidgetPrivate;
 
-namespace BinEditor {
-namespace Internal {
-
-class BinEditorWidgetPrivate;
-
-class BinEditorWidget : public QAbstractScrollArea
+class HexEditorWidget : public QAbstractScrollArea
 {
     Q_OBJECT
     Q_PROPERTY(bool modified READ isModified WRITE setModified DESIGNABLE false)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly DESIGNABLE false)
-    Q_PROPERTY(QList<BinEditor::Markup> markup READ markup WRITE setMarkup DESIGNABLE false)
+    Q_PROPERTY(QList<HexEditor::Markup> markup READ markup WRITE setMarkup DESIGNABLE false)
     Q_PROPERTY(bool newWindowRequestAllowed READ newWindowRequestAllowed WRITE setNewWindowRequestAllowed DESIGNABLE false)
 
 public:
-    BinEditorWidget(QWidget *parent = nullptr);
-    ~BinEditorWidget() override;
+    HexEditorWidget(QWidget *parent = nullptr);
+    ~HexEditorWidget() override;
 
     EditorService *editorService() const;
 
@@ -122,7 +118,7 @@ public:
 
     QList<Markup> markup() const { return m_markup; }
 
-    void setFontSettings(const TextEditor::FontSettings &fs);
+    //void setFontSettings(const TextEditor::FontSettings &fs);
     void highlightSearchResults(const QByteArray &pattern, QTextDocument::FindFlags findFlags = {});
     void copy(bool raw = false);
     void setMarkup(const QList<Markup> &markup);
@@ -149,8 +145,8 @@ private:
     void timerEvent(QTimerEvent *) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
-    friend class BinEditorWidgetPrivate;
-    BinEditorWidgetPrivate *d;
+    friend class HexEditorWidgetPrivate;
+    HexEditorWidgetPrivate *d;
 
     using BlockMap = QMap<qint64, QByteArray>;
     BlockMap m_data;
@@ -210,7 +206,7 @@ private:
     QBasicTimer m_cursorBlinkTimer;
 
     void init();
-    Utils::optional<qint64> posAt(const QPoint &pos, bool includeEmptyArea = true) const;
+    //Utils::optional<qint64> posAt(const QPoint &pos, bool includeEmptyArea = true) const;
     bool inTextArea(const QPoint &pos) const;
     QRect cursorRect() const;
     void updateLines();
@@ -243,5 +239,4 @@ private:
     QList<Markup> m_markup;
 };
 
-} // namespace Internal
-} // namespace BinEditor
+}

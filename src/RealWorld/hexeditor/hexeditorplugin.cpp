@@ -58,7 +58,7 @@
 using namespace Utils;
 using namespace Core;
 
-namespace BinEditor {
+namespace HexEditor {
 namespace Internal {
 
 class BinEditorFind : public IFindSupport
@@ -66,7 +66,7 @@ class BinEditorFind : public IFindSupport
     Q_OBJECT
 
 public:
-    BinEditorFind(BinEditorWidget *widget)
+    BinEditorFind(HexEditorWidget *widget)
     {
         m_widget = widget;
     }
@@ -143,7 +143,7 @@ public:
                 result = NotYetFound;
                 m_contPos +=
                         findFlags & FindBackward
-                        ? -BinEditorWidget::SearchStride : BinEditorWidget::SearchStride;
+                        ? -HexEditorWidget::SearchStride : HexEditorWidget::SearchStride;
             } else {
                 result = NotFound;
                 m_contPos = -1;
@@ -176,7 +176,7 @@ public:
         } else if (found == -2) {
             result = NotYetFound;
             m_contPos += findFlags & FindBackward
-                         ? -BinEditorWidget::SearchStride : BinEditorWidget::SearchStride;
+                         ? -HexEditorWidget::SearchStride : HexEditorWidget::SearchStride;
         } else {
             result = NotFound;
             m_contPos = -1;
@@ -186,7 +186,7 @@ public:
     }
 
 private:
-    BinEditorWidget *m_widget;
+    HexEditorWidget *m_widget;
     qint64 m_incrementalStartPos = -1;
     qint64 m_contPos = -1; // Only valid if last result was NotYetFound.
     bool m_incrementalWrappedState = false;
@@ -198,7 +198,7 @@ class BinEditorDocument : public IDocument
 {
     Q_OBJECT
 public:
-    BinEditorDocument(BinEditorWidget *parent) :
+    BinEditorDocument(HexEditorWidget *parent) :
         IDocument(parent)
     {
         setId(Core::Constants::K_DEFAULT_BINARY_EDITOR_ID);
@@ -232,7 +232,7 @@ public:
 
     bool save(QString *errorString, const QString &fn, bool autoSave) override
     {
-        QTC_ASSERT(!autoSave, return true); // bineditor does not support autosave - it would be a bit expensive
+        Q_ASSERT(!autoSave, return true); // bineditor does not support autosave - it would be a bit expensive
         const FilePath fileNameToUse = fn.isEmpty() ? filePath() : FilePath::fromString(fn);
         if (m_widget->save(errorString, filePath().toString(), fileNameToUse.toString())) {
             setFilePath(fileNameToUse);
@@ -350,14 +350,14 @@ public:
     }
 
 private:
-    BinEditorWidget *m_widget;
+    HexEditorWidget *m_widget;
 };
 
 class BinEditor : public IEditor
 {
     Q_OBJECT
 public:
-    BinEditor(BinEditorWidget *widget)
+    BinEditor(HexEditorWidget *widget)
     {
         setWidget(widget);
         m_file = new BinEditorDocument(widget);
@@ -378,11 +378,11 @@ public:
 
         widget->setEditor(this);
 
-        connect(widget, &BinEditorWidget::cursorPositionChanged,
+        connect(widget, &HexEditorWidget::cursorPositionChanged,
                 this, &BinEditor::updateCursorPosition);
         connect(m_addressEdit, &QLineEdit::editingFinished,
                 this, &BinEditor::jumpToAddress);
-        connect(widget, &BinEditorWidget::modificationChanged,
+        connect(widget, &HexEditorWidget::modificationChanged,
                 m_file, &IDocument::changed);
         updateCursorPosition(widget->cursorPosition());
     }
@@ -406,10 +406,10 @@ private:
         updateCursorPosition(editorWidget()->cursorPosition());
     }
 
-    BinEditorWidget *editorWidget() const
+    HexEditorWidget *editorWidget() const
     {
-        QTC_ASSERT(qobject_cast<BinEditorWidget *>(m_widget.data()), return nullptr);
-        return static_cast<BinEditorWidget *>(m_widget.data());
+        Q_ASSERT(qobject_cast<HexEditorWidget *>(m_widget.data()), return nullptr);
+        return static_cast<HexEditorWidget *>(m_widget.data());
     }
 
 private:
@@ -472,13 +472,13 @@ BinEditorFactory::BinEditorFactory()
     addMimeType(Constants::C_BINEDITOR_MIMETYPE);
 
     setEditorCreator([this] {
-        auto widget = new BinEditorWidget();
+        auto widget = new HexEditorWidget();
         auto editor = new BinEditor(widget);
 
-        connect(dd->m_undoAction, &QAction::triggered, widget, &BinEditorWidget::undo);
-        connect(dd->m_redoAction, &QAction::triggered, widget, &BinEditorWidget::redo);
-        connect(dd->m_copyAction, &QAction::triggered, widget, &BinEditorWidget::copy);
-        connect(dd->m_selectAllAction, &QAction::triggered, widget, &BinEditorWidget::selectAll);
+        connect(dd->m_undoAction, &QAction::triggered, widget, &HexEditorWidget::undo);
+        connect(dd->m_redoAction, &QAction::triggered, widget, &HexEditorWidget::redo);
+        connect(dd->m_copyAction, &QAction::triggered, widget, &HexEditorWidget::copy);
+        connect(dd->m_selectAllAction, &QAction::triggered, widget, &HexEditorWidget::selectAll);
 
         auto updateActions = [widget] {
             dd->m_selectAllAction->setEnabled(true);
@@ -486,8 +486,8 @@ BinEditorFactory::BinEditorFactory()
             dd->m_redoAction->setEnabled(widget->isRedoAvailable());
         };
 
-        connect(widget, &BinEditorWidget::undoAvailable, widget, updateActions);
-        connect(widget, &BinEditorWidget::redoAvailable, widget, updateActions);
+        connect(widget, &HexEditorWidget::undoAvailable, widget, updateActions);
+        connect(widget, &HexEditorWidget::redoAvailable, widget, updateActions);
 
         auto aggregate = new Aggregation::Aggregate;
         auto binEditorFind = new BinEditorFind(widget);
@@ -502,17 +502,17 @@ BinEditorFactory::BinEditorFactory()
 
 EditorService *FactoryServiceImpl::createEditorService(const QString &title0, bool wantsEditor)
 {
-    BinEditorWidget *widget = nullptr;
+    HexEditorWidget *widget = nullptr;
     if (wantsEditor) {
         QString title = title0;
         IEditor *editor = EditorManager::openEditorWithContents(
                     Core::Constants::K_DEFAULT_BINARY_EDITOR_ID, &title);
         if (!editor)
             return nullptr;
-        widget = qobject_cast<BinEditorWidget *>(editor->widget());
+        widget = qobject_cast<HexEditorWidget *>(editor->widget());
         widget->setEditor(editor);
     } else {
-        widget = new BinEditorWidget;
+        widget = new HexEditorWidget;
         widget->setWindowTitle(title0);
     }
     return widget->editorService();

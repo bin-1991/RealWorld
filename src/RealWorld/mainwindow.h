@@ -5,6 +5,7 @@
 #include <qdockwidget.h>
 #include <qtextedit.h>
 #include "ui_mainwindow.h"
+#include "hexeditor/hexeditorwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,6 +22,9 @@ public:
 
     QDockWidget dock_widget_output;
     QTextEdit text_edit_output;
+
+    QDockWidget dock_widget_hexeditor;
+    HexEditor::HexEditorWidget hexeditor;
 
     QString file_path;
 private slots:

@@ -12,7 +12,13 @@ MainWindow::MainWindow(QWidget* parent)
     dock_widget_output.setWidget(&text_edit_output);
     addDockWidget(Qt::BottomDockWidgetArea, &dock_widget_output);
 
-
+    
+    dock_widget_hexeditor.setWindowTitle(tr("Hex View"));
+    //dock_widget_hexeditor.setWidget(&widget_hexeditor);
+    dock_widget_hexeditor.setFeatures(QDockWidget::DockWidgetMovable);
+    dock_widget_hexeditor.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    dock_widget_hexeditor.setWidget(&hexeditor);
+    addDockWidget(Qt::BottomDockWidgetArea, &dock_widget_hexeditor);
 }
 
 MainWindow::~MainWindow()

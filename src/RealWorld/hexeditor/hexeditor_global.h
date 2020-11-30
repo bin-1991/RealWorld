@@ -32,3 +32,5 @@
 #else
 #  define BINEDITOR_EXPORT Q_DECL_IMPORT
 #endif
+
+#define QTC_ASSERT(cond, action) if (Q_LIKELY(cond)) {} else { Q_ASSERT(cond); action; } do {} while (0)
