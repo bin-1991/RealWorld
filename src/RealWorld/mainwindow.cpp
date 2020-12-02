@@ -6,18 +6,18 @@ MainWindow::MainWindow(QWidget* parent)
     ui.setupUi(this);
     setWindowIcon(QIcon(":/images/RealWorld.ico"));
 
-    dock_widget_output.setWindowTitle(tr("Output"));
-    dock_widget_output.setFeatures(QDockWidget::DockWidgetMovable);
-    dock_widget_output.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    dock_widget_output.setWidget(&text_edit_output);
-    addDockWidget(Qt::BottomDockWidgetArea, &dock_widget_output);
+    m_dockWidgetOutput.setWindowTitle(tr("Output window"));
+    m_dockWidgetOutput.setFeatures(QDockWidget::DockWidgetMovable);
+    m_dockWidgetOutput.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    m_dockWidgetOutput.setWidget(&m_textEditOutput);
+    addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetOutput);
 
     
-    dock_widget_hexedit.setWindowTitle(tr("Hex View"));
-    dock_widget_hexedit.setFeatures(QDockWidget::DockWidgetMovable);
-    dock_widget_hexedit.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    dock_widget_hexedit.setWidget(&hexedit_hex_view);
-    addDockWidget(Qt::BottomDockWidgetArea, &dock_widget_hexedit);
+    m_dockWidgetHexEdit.setWindowTitle(tr("Hex View"));
+    m_dockWidgetHexEdit.setFeatures(QDockWidget::DockWidgetMovable);
+    m_dockWidgetHexEdit.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    m_dockWidgetHexEdit.setWidget(&m_hexEditHexView);
+    addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetHexEdit);
 }
 
 MainWindow::~MainWindow()
@@ -27,8 +27,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    file_path = QFileDialog::getOpenFileName(nullptr, tr("Select file"));
-    text_edit_output.append(tr("Load file") + ": " + file_path);
+    m_filePath = QFileDialog::getOpenFileName(nullptr, tr("Select file"));
+    m_textEditOutput.append(tr("Load file") + ": " + m_filePath);
+    QFile f(m_filePath);
+    if (f.isReadable())
+    {
+        m_data = f.readAll();
+    }
+    else
+    {
+        m_textEditOutput.append(tr("Open file") + " \"" + m_filePath + "\" failed.");
+    }
+
+    m_hexEditHexView.addData(0, m_data);
 }
 
 void MainWindow::on_actionClose_triggered()

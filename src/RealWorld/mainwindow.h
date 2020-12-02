@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <qdockwidget.h>
-#include <qtextedit.h>
+#include <QDockWidget>
+#include <QTextEdit>
 #include "ui_mainwindow.h"
 #include "hexedit/hexedit.h"
 
@@ -20,13 +20,14 @@ public:
     ~MainWindow();
 public:
 
-    QDockWidget dock_widget_output;
-    QTextEdit text_edit_output;
+    QDockWidget m_dockWidgetOutput;
+    QTextEdit m_textEditOutput;
 
-    QDockWidget dock_widget_hexedit;
-    HexEdit hexedit_hex_view;
+    QDockWidget m_dockWidgetHexEdit;
+    HexEdit m_hexEditHexView;
 
-    QString file_path;
+    QString m_filePath;
+    QByteArray m_data;
 private slots:
     void on_actionOpen_triggered();
 
