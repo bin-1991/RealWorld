@@ -8,14 +8,13 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_dockWidgetOutput.setWindowTitle(tr("Output window"));
     m_dockWidgetOutput.setFeatures(QDockWidget::DockWidgetMovable);
-    m_dockWidgetOutput.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     m_dockWidgetOutput.setWidget(&m_textEditOutput);
+    m_textEditOutput.setLineWrapMode(QTextEdit::NoWrap);
+    m_textEditOutput.setReadOnly(true);
     addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetOutput);
 
-    
     m_dockWidgetHexEdit.setWindowTitle(tr("Hex View"));
     m_dockWidgetHexEdit.setFeatures(QDockWidget::DockWidgetMovable);
-    m_dockWidgetHexEdit.setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     m_dockWidgetHexEdit.setWidget(&m_hexEditHexView);
     addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetHexEdit);
 }

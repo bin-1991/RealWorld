@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QTextEdit>
+#include <qscrollarea.h>
 #include "ui_mainwindow.h"
 #include "hexedit/hexedit.h"
 

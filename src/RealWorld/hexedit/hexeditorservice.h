@@ -64,19 +64,3 @@ public:
     virtual void setWatchPointRequestHandler(const std::function<void(quint64 address, uint size)> &) = 0;
     virtual void setAboutToBeDestroyedHandler(const std::function<void()> &) = 0;
 };
-
-class FactoryService
-{
-public:
-    virtual ~FactoryService() = default;
-
-    // Create a BinEditor widget. Embed into a Core::IEditor iff wantsEditor == true.
-    virtual EditorService *createEditorService(const QString &title, bool wantsEditor) = 0;
-};
-
-
-#define BinEditor_FactoryService_iid "org.qt-project.Qt.Creator.HexEditor.EditorService"
-
-QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(FactoryService, BinEditor_FactoryService_iid)
-QT_END_NAMESPACE
