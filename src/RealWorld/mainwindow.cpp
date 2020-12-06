@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget* parent)
     m_dockWidgetHexEdit.setFeatures(QDockWidget::DockWidgetMovable);
     m_dockWidgetHexEdit.setWidget(&m_hexEditHexView);
     addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetHexEdit);
+
 }
 
 MainWindow::~MainWindow()
@@ -38,7 +39,6 @@ void MainWindow::on_actionOpen_triggered()
         m_textEditOutput.append(tr("Open file") + " \"" + m_filePath + "\" failed.");
     }
 
-    m_hexEditHexView.addData(0, m_data);
 }
 
 void MainWindow::on_actionClose_triggered()
