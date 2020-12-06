@@ -13,7 +13,6 @@ QHexEditPrivate::QHexEditPrivate(QScrollArea* parent) : QWidget(parent)
     _undoMaskStack = new QUndoStack(this);
 
     _scrollArea = parent;
-    setOverwriteMode(true);
 
     //QFont font("Monospace", 8, QFont::Normal, false);
     //font.setFixedPitch(true);
@@ -898,9 +897,9 @@ void QHexEditPrivate::adjust()
     QFontMetrics metrics(this->font());
     _charWidth = metrics.width(QLatin1Char('9'));
     _charHeight = metrics.height();
-
+    
     _xPosHex = _horizonalSpacing;
-
+    
     // tell QAbstractScollbar, how big we are
     setMinimumHeight(((_xData.size() / 16 + 1) * _charHeight) + 5);
     setMinimumWidth(_xPosHex + HEXCHARS_IN_LINE * _charWidth);

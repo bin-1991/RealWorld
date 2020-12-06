@@ -19,6 +19,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
+private:
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* e) override;
+
+private:
+    void onOpenFile(const QString& path);
+
 public:
 
     QDockWidget m_dockWidgetOutput;
