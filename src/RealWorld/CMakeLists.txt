@@ -57,6 +57,7 @@ add_custom_command(TARGET RealWorld POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:RealWorld>/styles
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${QT_HOME}/plugins/styles $<TARGET_FILE_DIR:RealWorld>/styles
 
+    COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:RealWorld>/lang
     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:RealWorld>/lang
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/lang $<TARGET_FILE_DIR:RealWorld>/lang
     )

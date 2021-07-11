@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <qtranslator.h>
+#include <qfile.h>
 #include "RealWorld.h"
 #include "mainwindow.h"
 
@@ -14,7 +15,7 @@ void loadTranstor(const QApplication& app)
     switch (lang)
     {
     case QLocale::Chinese:
-        lang_file = ":/lang/zh-cn.qm";
+        lang_file = "zh-cn.qm";
         break;
     default:
         lang_file = NULL;
@@ -22,9 +23,13 @@ void loadTranstor(const QApplication& app)
 
     if (lang_file)
     {
-        QTranslator* translator = new QTranslator;
-        translator->load(":/lang/zh-cn.qm");
-        app.installTranslator(translator);
+        QFile f(lang_dir + lang_file);
+        if (f.exists())
+        {
+            QTranslator* translator = new QTranslator;
+            translator->load(lang_file);
+            app.installTranslator(translator);
+        }
     }
     return;
 }
