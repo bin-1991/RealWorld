@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/RealWorld.ico</file>
+        <file>lang/zh-cn.qm</file>
     </qresource>
 </RCC>
