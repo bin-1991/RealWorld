@@ -6,7 +6,7 @@
 #include <QTextEdit>
 #include <qscrollarea.h>
 #include "ui_mainwindow.h"
-#include "QHexEdit/QHexEdit.h"
+//#include "QHexEdit/QHexEdit.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,7 +32,7 @@ public:
     QTextEdit m_textEditOutput;
 
     QDockWidget m_dockWidgetHexEdit;
-    QHexEdit m_hexEditHexView;
+    //QHexEdit m_hexEditHexView;
 
     QString m_filePath;
     QByteArray m_data;

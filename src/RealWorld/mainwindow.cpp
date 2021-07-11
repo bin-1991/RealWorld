@@ -17,12 +17,12 @@ MainWindow::MainWindow(QWidget* parent)
     m_textEditOutput.setReadOnly(true);
     addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetOutput);
 
-    m_dockWidgetHexEdit.setWindowTitle(tr("Hex View"));
-    m_dockWidgetHexEdit.setFeatures(QDockWidget::DockWidgetMovable);
-    m_dockWidgetHexEdit.setWidget(&m_hexEditHexView);
-    addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetHexEdit);
+    //m_dockWidgetHexEdit.setWindowTitle(tr("Hex View"));
+    //m_dockWidgetHexEdit.setFeatures(QDockWidget::DockWidgetMovable);
+    //m_dockWidgetHexEdit.setWidget(&m_hexEditHexView);
+    //addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetHexEdit);
 
-    m_hexEditHexView.setOverwriteMode(true);
+    //m_hexEditHexView.setOverwriteMode(true);
     
 }
 
@@ -55,7 +55,7 @@ void MainWindow::onOpenFile(const QString& path)
     if (f.open(QFile::ReadOnly))
     {
         m_data = f.readAll();
-        m_hexEditHexView.setData(m_data);
+        //m_hexEditHexView.setData(m_data);
     }
     else
     {
