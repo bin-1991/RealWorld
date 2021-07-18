@@ -7,30 +7,27 @@
 
 void loadTranstor(const QApplication& app)
 {
-    QString lang_dir = app.applicationDirPath() + "/lang/";
+    QString LangPath = app.applicationDirPath() + "/lang/";
     
     QLocale ql;
-    const char* lang_file = NULL;
     QLocale::Language lang = ql.language();
     switch (lang)
     {
     case QLocale::Chinese:
-        lang_file = "zh-cn.qm";
+        LangPath += "zh-cn.qm";
         break;
     default:
-        lang_file = NULL;
+        LangPath += "zh-cn.qm";
+        return;
     }
 
-    if (lang_file)
+    if (QFile(LangPath).exists())
     {
-        QFile f(lang_dir + lang_file);
-        if (f.exists())
-        {
-            QTranslator* translator = new QTranslator;
-            translator->load(lang_file);
-            app.installTranslator(translator);
-        }
+        QTranslator* translator = new QTranslator;
+        translator->load(LangPath);
+        app.installTranslator(translator);
     }
+
     return;
 }
 

@@ -25,21 +25,22 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="13"/>
+        <location filename="../mainwindow.cpp" line="14"/>
         <source>Output window</source>
         <translation>输出窗口</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="53"/>
+        <location filename="../mainwindow.cpp" line="54"/>
         <source>Load file</source>
         <translation>加载文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="62"/>
+        <location filename="../mainwindow.cpp" line="63"/>
         <source>Open file</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="68"/>
+        <location filename="../mainwindow.cpp" line="69"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>

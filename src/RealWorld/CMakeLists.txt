@@ -52,7 +52,7 @@ add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES} ${TS_SRC})
 target_link_libraries(RealWorld Qt6::Widgets Qt6::Core Qt6::Gui)
 
 add_custom_command(TARGET RealWorld PRE_BUILD
-    COMMAND Qt6::lupdate -pro ${CMAKE_CURRENT_SOURCE_DIR}/realworld.pro -ts ${TS_SRC}
+    COMMAND Qt6::lupdate -pro ${CMAKE_CURRENT_SOURCE_DIR}/realworld.pro
     COMMAND Qt6::lrelease ${TS_SRC}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
