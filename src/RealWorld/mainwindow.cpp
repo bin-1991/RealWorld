@@ -8,7 +8,6 @@
 MainWindow::MainWindow(QWidget* parent)
 {
     ui.setupUi(this);
-    
     m_dockWidgetOutput.setWindowTitle(tr("Output window"));
     m_dockWidgetOutput.setFeatures(QDockWidget::DockWidgetMovable);
     m_dockWidgetOutput.setWidget(&m_textEditOutput);
