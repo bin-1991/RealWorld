@@ -1,41 +1,57 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QMainWindow>
 #include <qtranslator.h>
 #include <qfile.h>
 #include "RealWorld.h"
 #include "mainwindow.h"
 
-void loadTranstor(const QApplication& app)
+void initApp(QApplication& app)
 {
-    QString LangPath = app.applicationDirPath() + "/lang/";
+    QString LangPath = ":/lang/";
     
     QLocale ql;
     QLocale::Language lang = ql.language();
     switch (lang)
     {
     case QLocale::Chinese:
+    {
         LangPath += "zh-cn.qm";
         break;
+    }   
     default:
         LangPath += "zh-cn.qm";
-        return;
+        //return;
+        break;
     }
+
+    QFont font;
+    font.setPointSize(9);
+    font.setFamily("微软雅黑");
+    app.setFont(font);
+    
+    app.setWindowIcon(QIcon(":/images/RealWorld.ico"));
 
     if (QFile(LangPath).exists())
     {
         QTranslator* translator = new QTranslator;
-        translator->load(LangPath);
-        app.installTranslator(translator);
+        if (translator->load(LangPath))
+        {
+            app.installTranslator(translator);
+        }
+        else
+        {
+            delete translator;
+        }
     }
 
-    return;
+    return ;
 }
 
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
 
-    loadTranstor(a);
+    initApp(a);
 
     MainWindow win;
     win.show();

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include <QFileDialog>
 #include <qevent.h>
 #include <qurl.h>
@@ -8,8 +8,7 @@
 MainWindow::MainWindow(QWidget* parent)
 {
     ui.setupUi(this);
-    setWindowIcon(QIcon(":/images/RealWorld.ico"));
-
+    
     m_dockWidgetOutput.setWindowTitle(tr("Output window"));
     m_dockWidgetOutput.setFeatures(QDockWidget::DockWidgetMovable);
     m_dockWidgetOutput.setWidget(&m_textEditOutput);

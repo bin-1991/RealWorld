@@ -20,15 +20,6 @@ set(SRC RealWorld.h
         mainwindow.cpp
         )
 
-#get_target_property(TT Qt6::lupdate IMPORTED_LOCATION)
-#message(STATUS "${TT}")
-
-
-#foreach(_ts_file ${TS_SRC})
-#    execute_process(COMMAND Qt6::lupdate -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${_ts_file} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-#    execute_process(COMMAND Qt6::lrelease ${_ts_file} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-#endforeach()
-
 set(ui_FILES mainwindow.ui)
 set(res_FILES realworld.qrc)
 
@@ -48,7 +39,7 @@ source_group(QHexEdit FILES ${hexedit_SRC})
 source_group(qt REGULAR_EXPRESSION "(mocs_.*)|(qrc_.*)")
 
 set(TS_SRC lang/zh-cn.ts)
-add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES} ${TS_SRC})
+add_executable(RealWorld WIN32 ${SRC} ${ui_FILES} ${res_FILES} ${TS_SRC} realworld.rc)
 target_link_libraries(RealWorld Qt6::Widgets Qt6::Core Qt6::Gui)
 
 add_custom_command(TARGET RealWorld PRE_BUILD
