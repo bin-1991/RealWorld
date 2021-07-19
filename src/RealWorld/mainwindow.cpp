@@ -74,3 +74,9 @@ void MainWindow::on_actionClose_triggered()
 {
 
 }
+
+void MainWindow::on_actionExit_triggered()
+{
+    close();
+}
+
