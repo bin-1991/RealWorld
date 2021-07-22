@@ -18,6 +18,8 @@ set(SRC RealWorld.h
         RealWorld.cpp
         mainwindow.h
         mainwindow.cpp
+        HexDump.cpp
+        HexDump.h
         )
 
 set(ui_FILES mainwindow.ui)

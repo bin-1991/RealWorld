@@ -37,22 +37,27 @@
         <translation type="vanished">关闭</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="11"/>
+        <location filename="../mainwindow.cpp" line="16"/>
         <source>Output window</source>
         <translation>输出窗口</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="51"/>
+        <location filename="../mainwindow.cpp" line="22"/>
+        <source>Hex View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="59"/>
         <source>Load file</source>
         <translation>加载文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="60"/>
+        <location filename="../mainwindow.cpp" line="68"/>
         <source>Open file</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="66"/>
+        <location filename="../mainwindow.cpp" line="74"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>

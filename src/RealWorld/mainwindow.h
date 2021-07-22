@@ -7,6 +7,7 @@
 #include <qscrollarea.h>
 #include "ui_mainwindow.h"
 //#include "QHexEdit/QHexEdit.h"
+#include "HexDump.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,14 +29,14 @@ private:
 
 public:
 
-    QDockWidget m_dockWidgetOutput;
-    QTextEdit m_textEditOutput;
+    QDockWidget mDockWidgetOutput;
+    QTextEdit* mTextEditOutput;
 
-    QDockWidget m_dockWidgetHexEdit;
-    //QHexEdit m_hexEditHexView;
+    QDockWidget mDockWidgetHexDump;
+    HexDump* mHexDump;
 
-    QString m_filePath;
-    QByteArray m_data;
+    QString mFilePath;
+    QByteArray mData;
 private slots:
     void on_actionOpen_triggered();
 

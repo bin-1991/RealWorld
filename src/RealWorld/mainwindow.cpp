@@ -8,19 +8,27 @@
 MainWindow::MainWindow(QWidget* parent)
 {
     ui.setupUi(this);
-    m_dockWidgetOutput.setWindowTitle(tr("Output window"));
-    m_dockWidgetOutput.setFeatures(QDockWidget::DockWidgetMovable);
-    m_dockWidgetOutput.setWidget(&m_textEditOutput);
-    m_textEditOutput.setLineWrapMode(QTextEdit::NoWrap);
-    m_textEditOutput.setReadOnly(true);
-    addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetOutput);
 
-    //m_dockWidgetHexEdit.setWindowTitle(tr("Hex View"));
-    //m_dockWidgetHexEdit.setFeatures(QDockWidget::DockWidgetMovable);
-    //m_dockWidgetHexEdit.setWidget(&m_hexEditHexView);
-    //addDockWidget(Qt::BottomDockWidgetArea, &m_dockWidgetHexEdit);
+    mTextEditOutput = new QTextEdit(this);
+    mTextEditOutput->setLineWrapMode(QTextEdit::NoWrap);
+    mTextEditOutput->setReadOnly(true);
 
-    //m_hexEditHexView.setOverwriteMode(true);
+    mDockWidgetOutput.setWindowTitle(tr("Output window"));
+    mDockWidgetOutput.setFeatures(QDockWidget::DockWidgetMovable);
+    mDockWidgetOutput.setWidget(mTextEditOutput);
+    addDockWidget(Qt::BottomDockWidgetArea, &mDockWidgetOutput);
+
+    mHexDump = new HexDump(this);
+    mDockWidgetHexDump.setWindowTitle(tr("Hex View"));
+    mDockWidgetHexDump.setFeatures(QDockWidget::DockWidgetMovable);
+    mDockWidgetHexDump.setWidget(mHexDump);
+    //QSizePolicy p;
+    //p.setVerticalPolicy(QSizePolicy::Preferred);
+    //mDockWidgetHexDump.setSizePolicy(p);
+    
+    addDockWidget(Qt::TopDockWidgetArea, &mDockWidgetHexDump);
+
+    //mHexDump->setOverwriteMode(true);
     
 }
 
@@ -48,16 +56,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::onOpenFile(const QString& path)
 {
-    m_textEditOutput.append(tr("Load file") + ":\"" + path + "\"");
+    mTextEditOutput->append(tr("Load file") + ":\"" + path + "\"");
     QFile f(path);
     if (f.open(QFile::ReadOnly))
     {
-        m_data = f.readAll();
+        mData = f.readAll();
         //m_hexEditHexView.setData(m_data);
     }
     else
     {
-        m_textEditOutput.append(tr("Open file") + " \"" + path + "\" failed.");
+        mTextEditOutput->append(tr("Open file") + " \"" + path + "\" failed.");
     }
 }
 
@@ -77,6 +85,8 @@ void MainWindow::on_actionClose_triggered()
 
 void MainWindow::on_actionExit_triggered()
 {
+    delete mHexDump;
+    delete mTextEditOutput;
     close();
 }
 
